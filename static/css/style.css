@@ -1,7 +1,11 @@
+/* ===== GLOBAL ===== */
+
 body{
 background:#f5f5f5;
-font-family:Arial;
+font-family:Arial, Helvetica, sans-serif;
 }
+
+/* ===== HEADER ===== */
 
 .header{
 background:white;
@@ -20,10 +24,13 @@ color:#2ecc71;
 font-weight:bold;
 }
 
+/* ===== SEARCH ===== */
+
 .search-box input{
 padding:8px;
-width:300px;
+width:280px;
 border:1px solid #ccc;
+border-radius:4px;
 }
 
 .search-box button{
@@ -31,61 +38,154 @@ background:#2ecc71;
 border:none;
 padding:8px 12px;
 color:white;
+border-radius:4px;
 }
+
+/* ===== CART BUTTON ===== */
 
 .cart-btn{
 background:#f39c12;
 padding:8px 15px;
 color:white;
 text-decoration:none;
+border-radius:5px;
 }
+
+.cart-btn:hover{
+background:#e67e22;
+}
+
+/* ===== MAIN ===== */
 
 .main-container{
 margin-top:30px;
 }
 
+.section-title{
+margin:25px 0 15px 0;
+font-weight:bold;
+}
+
+/* ===== BANNER ===== */
+
 .banner{
 width:100%;
-border-radius:8px;
-margin-bottom:20px;
-}
-
-.section-title{
-margin:20px 0;
-}
-
-.book-card{
-transition:0.3s;
+height:280px;
+object-fit:cover;
 border-radius:10px;
 margin-bottom:20px;
+}
+
+/* ===== CATEGORY ===== */
+
+.category-card{
+margin-bottom:20px;
+}
+
+.category-card a{
+text-decoration:none;
+color:#333;
+}
+
+.category-card a:hover{
+color:#2ecc71;
+}
+
+/* ===== BOOK CARD ===== */
+
+.book-card{
+border-radius:10px;
+overflow:hidden;
+transition:0.3s;
+cursor:pointer;
 }
 
 .book-card img{
 height:220px;
 object-fit:cover;
-border-top-left-radius:10px;
-border-top-right-radius:10px;
+transition:0.3s;
 }
 
+/* Hover effect */
+
 .book-card:hover{
-transform:scale(1.05);
-box-shadow:0 10px 20px rgba(0,0,0,0.2);
+transform:translateY(-6px);
+box-shadow:0 12px 25px rgba(0,0,0,0.15);
 }
+
+.book-card:hover img{
+transform:scale(1.05);
+}
+
+/* ===== BOOK TITLE ===== */
 
 .book-title{
 height:40px;
 overflow:hidden;
+font-weight:600;
 }
+
+/* ===== PRICE ===== */
 
 .price{
 color:#e74c3c;
 font-weight:bold;
+font-size:18px;
 }
+
+/* ===== RATING ===== */
+
+.star{
+color:#f1c40f;
+}
+
+.star-gray{
+color:#ccc;
+}
+
+/* ===== BOOK DETAIL ===== */
 
 .detail-img{
 width:100%;
-border-radius:8px;
+border-radius:10px;
 }
+
+/* ===== FILTER BOX ===== */
+
+.filter-box{
+display:flex;
+gap:10px;
+margin-bottom:20px;
+}
+
+.filter-box input,
+.filter-box select{
+padding:8px;
+border:1px solid #ccc;
+border-radius:4px;
+}
+
+/* ===== BLOG ===== */
+
+.blog-card{
+transition:0.3s;
+border-radius:10px;
+}
+
+.blog-card:hover{
+transform:translateY(-5px);
+box-shadow:0 10px 25px rgba(0,0,0,0.15);
+}
+
+/* ===== TABLE CART ===== */
+
+table{
+background:white;
+border-radius:8px;
+overflow:hidden;
+}
+
+/* ===== FOOTER ===== */
 
 .footer{
 margin-top:50px;
@@ -95,103 +195,113 @@ color:white;
 text-align:center;
 }
 
-.star{
-color:#f1c40f;
+/* ===== RESPONSIVE ===== */
+
+@media (max-width:768px){
+
+.search-box input{
+width:150px;
 }
 
-.star-gray{
-color:#ccc;
+.header-flex{
+flex-direction:column;
+gap:10px;
 }
 
-.book-card{
-transition:0.3s;
-border-radius:10px;
-margin-bottom:20px;
+.filter-box{
+flex-direction:column;
 }
 
-.book-card:hover{
-transform:scale(1.05);
-box-shadow:0 10px 20px rgba(0,0,0,0.2);
 }
 
-.book-card img{
-height:220px;
-object-fit:cover;
-}
+/* ===== BOOK SLIDER ===== */
 
-.price{
-color:#e74c3c;
-font-weight:bold;
-}
-
-.star{
-color:#f1c40f;
-}
-
-.star-gray{
-color:#ccc;
-}
-
-.book-card{
-transition:0.3s;
-border-radius:10px;
-margin-bottom:20px;
-}
-
-.book-card:hover{
-transform:scale(1.05);
-box-shadow:0 10px 20px rgba(0,0,0,0.2);
-}
-
-.book-card img{
-height:220px;
-object-fit:cover;
-}
-
-.price{
-color:#e74c3c;
-font-weight:bold;
-}
-
-.star{
-color:#f1c40f;
-}
-
-.star-gray{
-color:#ccc;
-}
-
-.banner{
+.slider-wrapper{
+position:relative;
+overflow:hidden;
 width:100%;
-height:280px;
-object-fit:cover;
+}
+
+.book-slider{
+display:flex;
+transition:transform 0.5s ease;
+}
+
+.book-item{
+min-width:25%;
+padding:10px;
+box-sizing:border-box;
+}
+
+/* book card trong slider */
+
+.book-item .book-card{
+height:100%;
+}
+
+/* slider buttons */
+
+.slider-btn{
+border:none;
+background:white;
+width:35px;
+height:35px;
+border-radius:50%;
+box-shadow:0 2px 6px rgba(0,0,0,0.2);
+cursor:pointer;
+margin-left:5px;
+}
+
+.slider-btn:hover{
+background:#2ecc71;
+color:white;
+}
+
+/* ẩn thanh scroll */
+
+.slider-wrapper::-webkit-scrollbar{
+display:none;
+}
+
+/* ===== RESPONSIVE SLIDER ===== */
+
+@media (max-width:992px){
+
+.book-item{
+min-width:33.33%;
+}
+
+}
+
+@media (max-width:768px){
+
+.book-item{
+min-width:50%;
+}
+
+}
+
+@media (max-width:480px){
+
+.book-item{
+min-width:100%;
+}
+
+}
+
+.section-title{
+font-size:20px;
+font-weight:600;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+.blog-card{
 border-radius:10px;
-}
-
-.category-card{
-margin-bottom:20px;
-}
-
-.book-card{
 transition:0.3s;
-border-radius:10px;
-margin-bottom:20px;
 }
 
-.book-card:hover{
-transform:scale(1.05);
-box-shadow:0 10px 20px rgba(0,0,0,0.2);
-}
-
-.star{
-color:#f1c40f;
-}
-
-.star-gray{
-color:#ccc;
-}
-
-.price{
-color:#e74c3c;
-font-weight:bold;
+.blog-card:hover{
+transform:translateY(-5px);
+box-shadow:0 12px 25px rgba(0,0,0,0.15);
 }

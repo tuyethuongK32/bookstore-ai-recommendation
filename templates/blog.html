@@ -2,77 +2,85 @@
 
 {% block content %}
 
-<h3 class="section-title">Danh sách sách</h3>
+<!-- HERO BANNER -->
 
-<form method="GET" class="filter-box">
+<div class="card shadow-sm mb-4 border-0">
 
-<input type="text"
-name="search"
-placeholder="Tìm sách">
+<img src="/static/image/banner_10.png"
+style="height:320px; object-fit:cover;"
+class="card-img">
 
-<select name="category">
+<div class="card-img-overlay d-flex align-items-center">
 
-<option value="">Danh mục</option>
+<div class="text-white">
 
-{% for c in categories %}
+<h2 class="fw-bold">📚 Góc đọc sách</h2>
 
-<option value="{{ c.category }}">
-{{ c.category }}
-</option>
+<p>
+Khám phá những cuốn sách hay giúp bạn phát triển bản thân
+và mở rộng tri thức mỗi ngày.
+</p>
 
-{% endfor %}
+</div>
 
-</select>
+</div>
 
-<select name="sort">
-
-<option value="">Sắp xếp</option>
-<option value="price_asc">Giá tăng</option>
-<option value="price_desc">Giá giảm</option>
-
-</select>
-
-<button class="btn btn-success">Lọc</button>
-
-</form>
+</div>
 
 
-<div class="row">
 
-{% for book in books %}
+<h3 class="mb-4">📰 Bài viết nổi bật</h3>
 
-<div class="col-md-3">
+<div class="row g-4">
 
-<div class="card book-card">
+<!-- BLOG 1 : VĂN HỌC -->
 
-<img src="{{ book.image }}">
+<div class="col-lg-6">
+
+<div class="card shadow-sm blog-card h-100">
+
+<img src="/static/image/banner2.jpg"
+class="card-img-top"
+style="height:220px; object-fit:cover;">
 
 <div class="card-body">
 
-<h6>{{ book.title }}</h6>
-<div class="rating">
+<h5 class="card-title fw-bold">
+Những cuốn sách văn học đáng đọc
+</h5>
 
-{% for i in range(1,6) %}
+<p class="text-muted">
+Văn học giúp chúng ta hiểu sâu hơn về cuộc sống,
+con người và cảm xúc thông qua những câu chuyện đầy ý nghĩa.
+</p>
 
-{% if i <= book.rating|int %}
+<hr>
 
-<i class="fa fa-star star"></i>
+<h6 class="mb-3">📚 Sách gợi ý</h6>
 
-{% else %}
+{% for book in literature %}
 
-<i class="fa fa-star star-gray"></i>
+<div class="d-flex mb-3">
 
-{% endif %}
+<img src="{{ book.image }}"
+style="width:60px;height:80px;object-fit:cover;margin-right:10px;">
 
-{% endfor %}
+<div>
 
-</div>
-<p class="price">{{ book.price }} đ</p>
+<b>{{ book.title }}</b>
+
+<br>
+
+<span class="text-danger">
+{{ "{:,.0f}".format(book.price) }} đ
+</span>
+
+<br>
 
 <a href="/book/{{ book.id }}"
-class="btn btn-primary btn-sm">
+class="btn btn-sm btn-outline-primary mt-1">
 
-Xem
+Xem sách
 
 </a>
 
@@ -80,9 +88,208 @@ Xem
 
 </div>
 
+{% endfor %}
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- BLOG 2 : TÂM LÝ -->
+
+<div class="col-lg-6">
+
+<div class="card shadow-sm blog-card h-100">
+
+<img src="/static/image/banner9.jpg"
+class="card-img-top"
+style="height:220px; object-fit:cover;">
+
+<div class="card-body">
+
+<h5 class="card-title fw-bold">
+Sách tâm lý & kỹ năng sống nên đọc
+</h5>
+
+<p class="text-muted">
+Những cuốn sách tâm lý giúp bạn hiểu bản thân,
+cải thiện kỹ năng giao tiếp và phát triển tư duy tích cực.
+</p>
+
+<hr>
+
+<h6 class="mb-3">📚 Sách gợi ý</h6>
+
+{% for book in psychology %}
+
+<div class="d-flex mb-3">
+
+<img src="{{ book.image }}"
+style="width:60px;height:80px;object-fit:cover;margin-right:10px;">
+
+<div>
+
+<b>{{ book.title }}</b>
+
+<br>
+
+<span class="text-danger">
+{{ "{:,.0f}".format(book.price) }} đ
+</span>
+
+<br>
+
+<a href="/book/{{ book.id }}"
+class="btn btn-sm btn-outline-primary mt-1">
+
+Xem sách
+
+</a>
+
+</div>
+
 </div>
 
 {% endfor %}
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- BLOG 3 : THIẾU NHI -->
+
+<div class="col-lg-6">
+
+<div class="card shadow-sm blog-card h-100">
+
+<img src="/static/image/banner8.png"
+class="card-img-top"
+style="height:220px; object-fit:cover;">
+
+<div class="card-body">
+
+<h5 class="card-title fw-bold">
+Sách thiếu nhi hay cho trẻ em
+</h5>
+
+<p class="text-muted">
+Những cuốn sách thiếu nhi giúp trẻ phát triển trí tưởng tượng,
+khả năng đọc hiểu và hình thành thói quen đọc sách.
+</p>
+
+<hr>
+
+<h6 class="mb-3">📚 Sách gợi ý</h6>
+
+{% for book in children %}
+
+<div class="d-flex mb-3">
+
+<img src="{{ book.image }}"
+style="width:60px;height:80px;object-fit:cover;margin-right:10px;">
+
+<div>
+
+<b>{{ book.title }}</b>
+
+<br>
+
+<span class="text-danger">
+{{ "{:,.0f}".format(book.price) }} đ
+</span>
+
+<br>
+
+<a href="/book/{{ book.id }}"
+class="btn btn-sm btn-outline-primary mt-1">
+
+Xem sách
+
+</a>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- BLOG 4 : GIÁO DỤC -->
+
+<div class="col-lg-6">
+
+<div class="card shadow-sm blog-card h-100">
+
+<img src="/static/image/banner7.jpg"
+class="card-img-top"
+style="height:220px; object-fit:cover;">
+
+<div class="card-body">
+
+<h5 class="card-title fw-bold">
+Sách giáo dục & phát triển tri thức
+</h5>
+
+<p class="text-muted">
+Những cuốn sách giáo dục giúp mở rộng kiến thức,
+nâng cao tư duy và học hỏi thêm nhiều điều mới.
+</p>
+
+<hr>
+
+<h6 class="mb-3">📚 Sách gợi ý</h6>
+
+{% for book in education %}
+
+<div class="d-flex mb-3">
+
+<img src="{{ book.image }}"
+style="width:60px;height:80px;object-fit:cover;margin-right:10px;">
+
+<div>
+
+<b>{{ book.title }}</b>
+
+<br>
+
+<span class="text-danger">
+{{ "{:,.0f}".format(book.price) }} đ
+</span>
+
+<br>
+
+<a href="/book/{{ book.id }}"
+class="btn btn-sm btn-outline-primary mt-1">
+
+Xem sách
+
+</a>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+</div>
 
 </div>
 

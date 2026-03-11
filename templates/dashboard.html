@@ -1,43 +1,140 @@
-<h2>📊 Analytics Dashboard</h2>
+{% extends "base.html" %}
 
-<div class="row">
+{% block content %}
 
-<div class="col-md-4">
+<h3 class="mb-4">
+📊 Analytics Dashboard
+</h3>
 
-<div class="card p-3">
+<div class="row g-4">
 
-<h4>Total Books</h4>
-
-<h2>{{ total_books }}</h2>
-
-</div>
-
-</div>
-
+<!-- TOTAL BOOKS -->
 
 <div class="col-md-4">
 
-<div class="card p-3">
+<div class="card shadow-sm border-0">
 
-<h4>Orders</h4>
+<div class="card-body text-center">
 
-<h2>{{ total_orders }}</h2>
+<i class="fa fa-book fa-3x text-primary mb-3"></i>
+
+<h5>Tổng số sách</h5>
+
+<h2 class="fw-bold">
+
+{{ total_books }}
+
+</h2>
 
 </div>
 
 </div>
 
+</div>
+
+
+<!-- ORDERS -->
 
 <div class="col-md-4">
 
-<div class="card p-3">
+<div class="card shadow-sm border-0">
 
-<h4>Users</h4>
+<div class="card-body text-center">
 
-<h2>{{ total_users }}</h2>
+<i class="fa fa-shopping-cart fa-3x text-success mb-3"></i>
+
+<h5>Tổng đơn hàng</h5>
+
+<h2 class="fw-bold">
+
+{{ total_orders }}
+
+</h2>
 
 </div>
 
 </div>
 
 </div>
+
+
+<!-- USERS -->
+
+<div class="col-md-4">
+
+<div class="card shadow-sm border-0">
+
+<div class="card-body text-center">
+
+<i class="fa fa-users fa-3x text-warning mb-3"></i>
+
+<h5>Người dùng</h5>
+
+<h2 class="fw-bold">
+
+{{ total_users }}
+
+</h2>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<hr class="my-5">
+
+
+<h4 class="mb-4">
+📈 Website Analytics
+</h4>
+
+<div class="row g-4">
+
+<div class="col-md-6">
+
+<div class="card shadow-sm">
+
+<div class="card-body">
+
+<h6>Traffic Website</h6>
+
+<p class="text-muted">
+
+Dữ liệu traffic được theo dõi thông qua Google Analytics.
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="col-md-6">
+
+<div class="card shadow-sm">
+
+<div class="card-body">
+
+<h6>Hành vi người dùng</h6>
+
+<p class="text-muted">
+
+Theo dõi các hành động như xem sách, thêm vào giỏ hàng và thanh toán.
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}

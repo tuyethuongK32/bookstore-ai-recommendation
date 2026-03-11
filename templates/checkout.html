@@ -2,24 +2,114 @@
 
 {% block content %}
 
+<div class="row justify-content-center">
+
+<div class="col-md-6">
+
+<div class="card shadow">
+
+<div class="card-header bg-success text-white">
+
+<h4 class="mb-0">
+<i class="fa fa-credit-card"></i>
+Thanh toán đơn hàng
+</h4>
+
+</div>
+
+<div class="card-body">
+
 {% if success %}
 
-<h2>Order successful</h2>
+<div class="text-center">
+
+<h3 class="text-success">
+<i class="fa fa-check-circle"></i>
+Đặt hàng thành công
+</h3>
+
+<p>
+Cảm ơn bạn đã mua sách tại Kho Sách Nhỏ.
+</p>
+
+<a href="/" class="btn btn-primary mt-3">
+Quay về trang chủ
+</a>
+
+</div>
 
 {% else %}
 
 <form method="post">
 
-<input name="name" placeholder="Name">
+<div class="mb-3">
 
-<input name="phone" placeholder="Phone">
+<label class="form-label">
+Họ và tên
+</label>
 
-<input name="address" placeholder="Address">
+<input
+type="text"
+name="name"
+class="form-control"
+placeholder="Nhập họ tên"
+required>
 
-<button type="submit">Place Order</button>
+</div>
+
+
+<div class="mb-3">
+
+<label class="form-label">
+Số điện thoại
+</label>
+
+<input
+type="text"
+name="phone"
+class="form-control"
+placeholder="Nhập số điện thoại"
+required>
+
+</div>
+
+
+<div class="mb-3">
+
+<label class="form-label">
+Địa chỉ giao hàng
+</label>
+
+<textarea
+name="address"
+class="form-control"
+rows="3"
+placeholder="Nhập địa chỉ giao hàng"
+required>
+</textarea>
+
+</div>
+
+
+<button
+type="submit"
+class="btn btn-success w-100">
+
+<i class="fa fa-check"></i>
+Đặt hàng
+
+</button>
 
 </form>
 
 {% endif %}
+
+</div>
+
+</div>
+
+</div>
+
+</div>
 
 {% endblock %}

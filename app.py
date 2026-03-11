@@ -1,17 +1,24 @@
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect, session, flash
 import sqlite3
 from model.recommender import recommend_books
+from collections import Counter
 
 app = Flask(__name__)
 app.secret_key = "bookstore_secret"
 
 
+# ---------------------------
+# DATABASE CONNECTION
+# ---------------------------
 def get_db():
     conn = sqlite3.connect("database/database.db")
     conn.row_factory = sqlite3.Row
     return conn
 
 
+# ---------------------------
+# HOME PAGE
+# ---------------------------
 @app.route("/")
 def index():
 
@@ -22,21 +29,33 @@ def index():
     ).fetchall()
 
     categories = conn.execute(
-        "SELECT DISTINCT category FROM books"
+        "SELECT DISTINCT category FROM books limit 40"
+    ).fetchall()
+
+    bestsellers = conn.execute(
+        "SELECT * FROM books WHERE rating IS NOT NULL ORDER BY rating DESC LIMIT 12"
     ).fetchall()
     
-    bestsellers = conn.execute(
-        "SELECT * FROM books WHERE rating IS NOT NULL ORDER BY rating DESC LIMIT 8"
-    ).fetchall()
+    featured = books[:8]
+    recommendations = books[8:16]
+    
+
+    conn.close()
+    
 
     return render_template(
         "index.html",
         books=books,
         categories=categories,
-        bestsellers=bestsellers
+        bestsellers=bestsellers,
+        recommendations=recommendations,
+        featured=featured
     )
 
 
+# ---------------------------
+# BOOK LIST
+# ---------------------------
 @app.route("/books")
 def books():
 
@@ -69,6 +88,8 @@ def books():
         "SELECT DISTINCT category FROM books"
     ).fetchall()
 
+    conn.close()
+
     return render_template(
         "books.html",
         books=books,
@@ -76,6 +97,9 @@ def books():
     )
 
 
+# ---------------------------
+# BOOK DETAIL
+# ---------------------------
 @app.route("/book/<int:id>")
 def book_detail(id):
 
@@ -86,7 +110,15 @@ def book_detail(id):
         (id,)
     ).fetchone()
 
-    recommendations = recommend_books(book["title"])
+    if not book:
+        return "Book not found"
+
+    try:
+        recommendations = recommend_books(book["title"])
+    except:
+        recommendations = []
+
+    conn.close()
 
     return render_template(
         "book_detail.html",
@@ -95,6 +127,9 @@ def book_detail(id):
     )
 
 
+# ---------------------------
+# ADD TO CART
+# ---------------------------
 @app.route("/add_to_cart/<int:id>")
 def add_to_cart(id):
 
@@ -102,71 +137,157 @@ def add_to_cart(id):
         session["cart"] = []
 
     session["cart"].append(id)
+    session.modified = True
 
+    flash("Đã thêm sách vào giỏ hàng!")
+
+    return redirect("/cart")
+
+
+# ---------------------------
+# REMOVE FROM CART
+# ---------------------------
+@app.route("/remove_from_cart/<int:id>")
+def remove_from_cart(id):
+
+    cart = session.get("cart", [])
+
+    if id in cart:
+        cart.remove(id)
+
+    session["cart"] = cart
     session.modified = True
 
     return redirect("/cart")
 
 
+# ---------------------------
+# CART PAGE
+# ---------------------------
 @app.route("/cart")
 def cart():
 
-    conn = get_db()
-
     cart = session.get("cart", [])
+
+    conn = get_db()
 
     books = []
 
-    for id in cart:
+    for book_id in cart:
+
         book = conn.execute(
             "SELECT * FROM books WHERE id=?",
-            (id,)
+            (book_id,)
         ).fetchone()
+
         books.append(book)
 
-    total = sum(book["price"] for book in books)
+    counts = Counter(cart)
+
+    total = 0
+
+    for book in books:
+        total += book["price"]
 
     return render_template(
         "cart.html",
         books=books,
+        counts=counts,
         total=total
     )
 
 
-@app.route("/checkout")
+# ---------------------------
+# CHECKOUT
+# ---------------------------
+@app.route("/checkout", methods=["GET", "POST"])
 def checkout():
 
-    session["cart"] = []
+    if request.method == "POST":
 
-    return render_template("checkout.html")
+        name = request.form["name"]
+        phone = request.form["phone"]
+        address = request.form["address"]
+
+        # demo: xóa giỏ hàng sau khi đặt
+        session["cart"] = []
+
+        return render_template(
+            "checkout.html",
+            success=True
+        )
+
+    return render_template(
+        "checkout.html",
+        success=False
+    )
 
 
+# ---------------------------
+# ADMIN DASHBOARD
+# ---------------------------
 @app.route("/dashboard")
 def dashboard():
 
     conn = get_db()
+
     total_books = conn.execute(
-            "SELECT COUNT(*) FROM books"
+        "SELECT COUNT(*) FROM books"
     ).fetchone()[0]
 
-    return render_template( "dashboard.html",total_books=total_books)
+    total_orders = len(session.get("cart", []))
 
+    total_users = 10  # demo
+
+    return render_template(
+        "dashboard.html",
+        total_books=total_books,
+        total_orders=total_orders,
+        total_users=total_users
+    )
+
+
+# ---------------------------
+# BLOG PAGE (MARKETING)
+# ---------------------------
 @app.route("/blog")
 def blog():
 
-    posts = [
-        {
-            "title": "Top 10 Best Business Books",
-            "content": "Discover the most popular business books..."
-        },
-        {
-            "title": "Best Machine Learning Books",
-            "content": "Recommended ML books for beginners."
-        }
-    ]
+    conn = get_db()
 
-    return render_template("blog.html", posts=posts)
+    literature = conn.execute(
+        "SELECT * FROM books WHERE category LIKE '%Văn học%' LIMIT 3"
+    ).fetchall()
 
+    psychology = conn.execute(
+        "SELECT * FROM books WHERE category LIKE '%Tâm%' LIMIT 3"
+    ).fetchall()
 
+    children = conn.execute(
+        "SELECT * FROM books WHERE category LIKE '%Truyện tranh%' LIMIT 3"
+    ).fetchall()
+
+    education = conn.execute(
+        "SELECT * FROM books WHERE category LIKE '%Giáo dục%' LIMIT 3"
+    ).fetchall()
+
+    conn.close()
+
+    literature = [dict(x) for x in literature]
+    psychology = [dict(x) for x in psychology]
+    children = [dict(x) for x in children]
+    education = [dict(x) for x in education]
+
+    return render_template(
+        "blog.html",
+        literature=literature,
+        psychology=psychology,
+        children=children,
+        education=education
+    )
+
+# ---------------------------
+# RUN APP
+# ---------------------------
 if __name__ == "__main__":
     app.run(debug=True)

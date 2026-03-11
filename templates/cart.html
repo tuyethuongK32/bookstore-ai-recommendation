@@ -2,36 +2,123 @@
 
 {% block content %}
 
-<h3 class="section-title">Giỏ hàng</h3>
+<h3 class="mb-4">🛒 Giỏ hàng của bạn</h3>
 
-<table class="table">
+{% if books|length == 0 %}
+
+<div class="alert alert-info">
+Giỏ hàng của bạn đang trống.
+</div>
+
+<a href="/books" class="btn btn-primary">
+Tiếp tục mua sách
+</a>
+
+{% else %}
+
+<div class="table-responsive">
+
+<table class="table table-bordered align-middle">
+
+<thead class="table-light">
 
 <tr>
+<th>Ảnh</th>
 <th>Sách</th>
+<th>Số lượng</th>
 <th>Giá</th>
+<th></th>
 </tr>
 
-{% for book in books %}
+</thead>
+
+<tbody>
+
+{% for book in books|unique(attribute="id") %}
 
 <tr>
 
-<td>{{ book.title }}</td>
+<td style="width:100px">
 
-<td class="price">{{ book.price }} đ</td>
+<img src="{{ book.image }}"
+style="height:80px; object-fit:cover;">
+
+</td>
+
+<td>
+
+<b>{{ book.title }}</b>
+<br>
+<small>{{ book.author }}</small>
+
+</td>
+
+<td>
+
+{{ counts[book.id] }}
+
+</td>
+
+<td class="text-danger fw-bold">
+
+{{ "{:,.0f}".format(book.price * counts[book.id]) }} đ
+
+</td>
+
+<td>
+
+<a href="/remove_from_cart/{{ book.id }}"
+class="btn btn-sm btn-danger">
+
+<i class="fa fa-trash"></i>
+
+</a>
+
+</td>
 
 </tr>
 
 {% endfor %}
 
+</tbody>
+
 </table>
 
-<h4>Tổng: {{ total }} đ</h4>
+</div>
+
+<div class="d-flex justify-content-between mt-4">
+
+<a href="/books" class="btn btn-outline-primary">
+
+<i class="fa fa-arrow-left"></i>
+Tiếp tục mua sách
+
+</a>
+
+<div class="text-end">
+
+<h4>
+
+Tổng tiền:
+
+<span class="text-danger">
+{{ "{:,.0f}".format(total) }} đ
+</span>
+
+</h4>
 
 <a href="/checkout"
-class="btn btn-success">
+class="btn btn-success btn-lg mt-2">
 
+<i class="fa fa-credit-card"></i>
 Thanh toán
 
 </a>
+
+</div>
+
+</div>
+
+{% endif %}
 
 {% endblock %}
