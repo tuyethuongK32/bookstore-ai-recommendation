@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row">
+
+<div class="col-md-4">
+
+<img src="{{ book.image }}"
+class="detail-img">
+
+</div>
+
+<div class="col-md-8">
+
+<h2>{{ book.title }}</h2>
+
+<p><b>Tác giả:</b> {{ book.author }}</p>
+
+<p><b>Danh mục:</b> {{ book.category }}</p>
+
+<p class="price">{{ book.price }} đ</p>
+
+<a href="/add_to_cart/{{ book.id }}"
+class="btn btn-success">
+
+Thêm vào giỏ
+
+</a>
+
+</div>
+
+</div>
+
+
+<hr>
+
+<h3 class="section-title">Sách gợi ý cho bạn</h3>
+
+<div id="recommendCarousel" class="carousel slide">
+
+<div class="carousel-inner">
+
+<div class="carousel-item active">
+
+<div class="row">
+
+{% for r in recommendations[:4] %}
+
+<div class="col-md-3">
+
+<div class="card book-card">
+
+<img src="{{ r.image }}">
+
+<div class="card-body">
+
+<h6>{{ r.title }}</h6>
+
+<a href="/book/{{ r.id }}"
+class="btn btn-primary btn-sm">
+Xem
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+</div>
+
+<button class="carousel-control-prev"
+data-bs-target="#recommendCarousel"
+data-bs-slide="prev">
+
+<span class="carousel-control-prev-icon"></span>
+
+</button>
+
+<button class="carousel-control-next"
+data-bs-target="#recommendCarousel"
+data-bs-slide="next">
+
+<span class="carousel-control-next-icon"></span>
+
+</button>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h3 class="section-title">Danh sách sách</h3>
+
+<form method="GET" class="filter-box">
+
+<input type="text"
+name="search"
+placeholder="Tìm sách">
+
+<select name="category">
+
+<option value="">Danh mục</option>
+
+{% for c in categories %}
+
+<option value="{{ c.category }}">
+{{ c.category }}
+</option>
+
+{% endfor %}
+
+</select>
+
+<select name="sort">
+
+<option value="">Sắp xếp</option>
+<option value="price_asc">Giá tăng</option>
+<option value="price_desc">Giá giảm</option>
+
+</select>
+
+<button class="btn btn-success">Lọc</button>
+
+</form>
+
+
+<div class="row">
+
+{% for book in books %}
+
+<div class="col-md-3">
+
+<div class="card book-card">
+
+<img src="{{ book.image }}">
+
+<div class="card-body">
+
+<h6>{{ book.title }}</h6>
+<div class="rating">
+
+{% for i in range(1,6) %}
+
+{% if i <= book.rating|int %}
+
+<i class="fa fa-star star"></i>
+
+{% else %}
+
+<i class="fa fa-star star-gray"></i>
+
+{% endif %}
+
+{% endfor %}
+
+</div>
+<p class="price">{{ book.price }} đ</p>
+
+<a href="/book/{{ book.id }}"
+class="btn btn-primary btn-sm">
+
+Xem
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+{% endblock %}

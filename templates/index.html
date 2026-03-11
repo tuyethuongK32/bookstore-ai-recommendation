@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row">
+
+<!-- SIDEBAR -->
+
+<div class="col-md-3">
+
+<div class="card category-card">
+
+<div class="card-header">
+Danh mục sách
+</div>
+
+<ul class="list-group list-group-flush">
+
+{% for c in categories %}
+
+<li class="list-group-item">
+
+<a href="/books?category={{ c.category }}">
+{{ c.category }}
+</a>
+
+</li>
+
+{% endfor %}
+
+</ul>
+
+</div>
+
+</div>
+
+
+<!-- MAIN CONTENT -->
+
+<div class="col-md-9">
+
+<img src="/static/images/banner.jpg"
+class="banner">
+
+<h3 class="section-title">Sách nổi bật</h3>
+
+<div class="row">
+
+{% for book in books %}
+
+<div class="col-md-3">
+
+<div class="card book-card">
+
+<img src="{{ book.image }}">
+
+<div class="card-body">
+
+<h6 class="book-title">{{ book.title }}</h6>
+
+<div class="rating">
+
+{% for i in range(1,6) %}
+
+{% if i <= book.rating|int %}
+
+<i class="fa fa-star star"></i>
+
+{% else %}
+
+<i class="fa fa-star star-gray"></i>
+
+{% endif %}
+
+{% endfor %}
+
+</div>
+
+<p class="price">{{ book.price }} đ</p>
+
+<a href="/book/{{ book.id }}"
+class="btn btn-sm btn-primary">
+
+Xem chi tiết
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+</div>
+
+<h3 class="section-title">Sách bán chạy</h3>
+
+<div class="row">
+
+{% for book in bestsellers %}
+
+<div class="col-md-3">
+
+<div class="card book-card">
+
+<img src="{{ book.image }}">
+
+<div class="card-body">
+
+<h6>{{ book.title }}</h6>
+
+<p class="price">{{ book.price }} đ</p>
+
+</div>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if success %}
+
+<h2>Order successful</h2>
+
+{% else %}
+
+<form method="post">
+
+<input name="name" placeholder="Name">
+
+<input name="phone" placeholder="Phone">
+
+<input name="address" placeholder="Address">
+
+<button type="submit">Place Order</button>
+
+</form>
+
+{% endif %}
+
+{% endblock %}
