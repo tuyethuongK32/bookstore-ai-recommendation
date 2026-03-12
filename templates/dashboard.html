@@ -3,12 +3,12 @@
 {% block content %}
 
 <h3 class="mb-4">
-📊 Analytics Dashboard
+📊 Bảng điều khiển thống kê
 </h3>
 
 <div class="row g-4">
 
-<!-- TOTAL BOOKS -->
+<!-- TỔNG SỐ SÁCH -->
 
 <div class="col-md-4">
 
@@ -21,19 +21,20 @@
 <h5>Tổng số sách</h5>
 
 <h2 class="fw-bold">
-
 {{ total_books }}
-
 </h2>
 
-</div>
+<p class="text-muted small">
+Số lượng sách hiện có trong hệ thống
+</p>
 
 </div>
 
 </div>
 
+</div>
 
-<!-- ORDERS -->
+<!-- TỔNG ĐƠN HÀNG -->
 
 <div class="col-md-4">
 
@@ -46,19 +47,20 @@
 <h5>Tổng đơn hàng</h5>
 
 <h2 class="fw-bold">
-
 {{ total_orders }}
-
 </h2>
 
-</div>
+<p class="text-muted small">
+Tổng số đơn hàng đã được tạo
+</p>
 
 </div>
 
 </div>
 
+</div>
 
-<!-- USERS -->
+<!-- LƯỢT TRUY CẬP -->
 
 <div class="col-md-4">
 
@@ -66,17 +68,17 @@
 
 <div class="card-body text-center">
 
-<i class="fa fa-users fa-3x text-warning mb-3"></i>
+<i class="fa fa-chart-line fa-3x text-warning mb-3"></i>
 
-<h5>Người dùng</h5>
+<h5>Lượt truy cập</h5>
 
 <h2 class="fw-bold">
-
-{{ total_users }}
-
+Google Analytics
 </h2>
 
-</div>
+<p class="text-muted small">
+Theo dõi chi tiết trong Google Analytics
+</p>
 
 </div>
 
@@ -84,52 +86,150 @@
 
 </div>
 
+</div>
 
 <hr class="my-5">
 
-
 <h4 class="mb-4">
-📈 Website Analytics
+📈 Phân tích website
 </h4>
 
 <div class="row g-4">
 
 <div class="col-md-6">
 
-<div class="card shadow-sm">
+<div class="card shadow-sm h-100">
 
 <div class="card-body">
 
-<h6>Traffic Website</h6>
+<h6 class="fw-bold">📊 Traffic Website</h6>
 
 <p class="text-muted">
-
-Dữ liệu traffic được theo dõi thông qua Google Analytics.
-
+Website sử dụng Google Analytics để theo dõi lượng truy cập,
+nguồn traffic, thiết bị người dùng và thời gian truy cập.
 </p>
 
-</div>
+<ul class="text-muted small">
+<li>Lượt truy cập trang</li>
+<li>Người dùng theo khu vực</li>
+<li>Thiết bị sử dụng (Mobile / Desktop)</li>
+<li>Thời gian truy cập</li>
+</ul>
 
 </div>
 
 </div>
 
+</div>
 
 <div class="col-md-6">
 
+<div class="card shadow-sm h-100">
+
+<div class="card-body">
+
+<h6 class="fw-bold">🛒 Hành vi người dùng</h6>
+
+<p class="text-muted">
+Hệ thống theo dõi các hành động quan trọng của người dùng
+trong quá trình mua sách.
+</p>
+
+<ul class="text-muted small">
+<li>Xem chi tiết sách</li>
+<li>Thêm sách vào giỏ hàng</li>
+<li>Thanh toán đơn hàng</li>
+<li>Khám phá blog và nội dung</li>
+</ul>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<hr class="my-5">
+
+<h4 class="mb-4">
+🔥 Top 5 sách được xem nhiều nhất
+</h4>
+
+{% if top_view_books %}
+
+<div class="row g-4">
+
+{% for book in top_view_books %}
+
+<div class="col-lg-2 col-md-4 col-sm-6">
+
+<div class="card shadow-sm h-100">
+
+<img src="{{ book.image }}"
+class="card-img-top"
+style="height:200px; object-fit:cover;">
+
+<div class="card-body d-flex flex-column">
+
+<h6 class="fw-bold">
+{{ book.title }}
+</h6>
+
+<p class="text-muted small">
+{{ book.author }}
+</p>
+
+<div class="mt-auto">
+
+<a href="/book/{{ book.id }}"
+class="btn btn-sm btn-outline-primary">
+
+Xem sách
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+{% else %}
+
+<div class="alert alert-info">
+Chưa có dữ liệu lượt xem sách.
+Hãy truy cập một vài cuốn sách để hệ thống ghi nhận thống kê.
+</div>
+
+{% endif %}
+
+<hr class="my-5">
+
+<h4 class="mb-4">
+📚 Mục tiêu website
+</h4>
+
 <div class="card shadow-sm">
 
 <div class="card-body">
 
-<h6>Hành vi người dùng</h6>
-
 <p class="text-muted">
-
-Theo dõi các hành động như xem sách, thêm vào giỏ hàng và thanh toán.
-
+Website <b>AI Bookstore/b> được xây dựng nhằm mục tiêu:
 </p>
 
-</div>
+<ul class="text-muted">
+<li>Giới thiệu và bán sách trực tuyến</li>
+<li>Ứng dụng AI để gợi ý sách phù hợp cho người đọc</li>
+<li>Phân tích hành vi người dùng thông qua Google Analytics</li>
+<li>Hỗ trợ chiến lược tiếp thị nội dung (Content Marketing, Social Media Marketing)</li>
+</ul>
 
 </div>
 

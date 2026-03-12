@@ -43,35 +43,6 @@ for _, row in df.iterrows():
     ))
 
 # -------------------------
-# CLEAR OLD DATA
-# -------------------------
-
-cursor.execute("DELETE FROM books")
-
-
-# -------------------------
-# INSERT DATA
-# -------------------------
-
-for _, row in df.iterrows():
-
-    cursor.execute("""
-    INSERT INTO books
-    (id, title, author, price, category, rating, image, content)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    """, (
-
-        int(row["id"]),
-        row["title"],
-        row["author"],
-        float(row["price"]),
-        row["category"],
-        float(row["rating"]),
-        row["image"],
-        row["content"]
-    ))
-
-# -------------------------
 # CREATE INDEX (tăng tốc search)
 # -------------------------
 

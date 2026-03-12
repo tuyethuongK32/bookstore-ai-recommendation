@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="vi">
 
 <head>
@@ -6,32 +7,67 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>KhoSachNho</title>
+<title>AI Bookstore</title>
+
+<!-- SEO META -->
+
+<meta name="description" content="Website thương mại điện tử bán sách tích hợp hệ thống gợi ý bằng Machine Learning.">
+<meta name="keywords" content="sách, bookstore, ecommerce, machine learning, recommendation system">
 
 <!-- Bootstrap -->
+
 <link rel="stylesheet"
 href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
 
 <!-- FontAwesome -->
+
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <!-- Custom CSS -->
+
 <link rel="stylesheet"
 href="{{ url_for('static', filename='css/style.css') }}">
 
-
 <!-- Google Analytics -->
+
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-399MD56RZV"></script>
 
 <script>
 window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
+
+function gtag(){
+dataLayer.push(arguments);
+}
+
 gtag('js', new Date());
 gtag('config', 'G-399MD56RZV');
 </script>
 
-</head>
+<!-- MARKETING EVENT TRACKING -->
+
+<script>
+
+function trackAddToCart(bookTitle){
+
+gtag('event','add_to_cart',{
+'event_category':'ecommerce',
+'event_label':bookTitle
+})
+
+}
+
+function trackCheckout(){
+
+gtag('event','checkout',{
+'event_category':'ecommerce'
+})
+
+}
+
+</script>
+
+<!-- SLIDER SCRIPT -->
 
 <script>
 
@@ -57,7 +93,6 @@ slider.style.transform =
 
 }
 
-
 function slideLeft(id){
 
 const slider = document.getElementById(id)
@@ -80,8 +115,9 @@ slider.style.transform =
 
 </script>
 
-<body>
+</head>
 
+<body>
 
 <!-- TOP BAR -->
 
@@ -91,9 +127,13 @@ slider.style.transform =
 
 <div>
 
-<i class="fa fa-phone"></i> 0123 456 789  
+<i class="fa fa-phone"></i> 0123 456 789
 
-<i class="fa fa-envelope ms-3"></i> hotro@aibookstore.com
+<i class="fa fa-envelope ms-3"></i>
+
+<a href="mailto:hotro@aibookstore.com" class="text-white text-decoration-none">
+hotro@aibookstore.com
+</a>
 
 </div>
 
@@ -106,8 +146,6 @@ slider.style.transform =
 </div>
 
 </div>
-
-
 
 <!-- HEADER -->
 
@@ -124,13 +162,12 @@ slider.style.transform =
 <a href="/" class="text-decoration-none">
 
 <h3 class="text-success fw-bold">
-Kho Sách<span class="text-dark">Nhỏ</span>
+AI Book<span class="text-dark">Store</span>
 </h3>
 
 </a>
 
 </div>
-
 
 <!-- SEARCH -->
 
@@ -158,7 +195,6 @@ placeholder="Tìm kiếm sách, tác giả...">
 
 </div>
 
-
 <!-- CART -->
 
 <div class="col-md-3 text-end">
@@ -166,7 +202,8 @@ placeholder="Tìm kiếm sách, tác giả...">
 <a href="/cart" class="btn btn-warning">
 
 <i class="fa fa-shopping-cart"></i>
-Giỏ hàng
+
+Giỏ hàng ({{ session.get('cart', [])|length }})
 
 </a>
 
@@ -178,11 +215,9 @@ Giỏ hàng
 
 </div>
 
-
-
 <!-- NAVBAR -->
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light border-top">
+<nav class="navbar navbar-expand-lg custom-navbar">
 
 <div class="container">
 
@@ -219,7 +254,31 @@ data-bs-target="#navbarNav">
 
 </nav>
 
+<!-- FLASH MESSAGE -->
 
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+
+<div class="container mt-3">
+
+{% for message in messages %}
+
+<div class="alert alert-success alert-dismissible fade show">
+
+{{ message }}
+
+<button type="button"
+class="btn-close"
+data-bs-dismiss="alert"></button>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+{% endif %}
+{% endwith %}
 
 <!-- MAIN CONTENT -->
 
@@ -230,11 +289,9 @@ data-bs-target="#navbarNav">
 
 </div>
 
-
-
 <!-- FOOTER -->
 
-<footer class="bg-dark text-light mt-5 pt-5 pb-4">
+<footer class="custom-footer mt-5 pt-5 pb-4">
 
 <div class="container">
 
@@ -242,7 +299,7 @@ data-bs-target="#navbarNav">
 
 <div class="col-md-4">
 
-<h5>Kho Sách Nhỏ</h5>
+<h5>AI Bookstore</h5>
 
 <p>
 
@@ -253,52 +310,50 @@ sử dụng Machine Learning.
 
 </div>
 
-
 <div class="col-md-4">
 
 <h5>Liên hệ</h5>
 
 <p>
 
-<i class="fa fa-map-marker-alt"></i> Tỉnh Đồng Tháp 
-<br>
+<i class="fa fa-map-marker-alt"></i> Tỉnh Đồng Tháp <br>
 
-<i class="fa fa-phone"></i> 0123 456 789  
-<br>
+<i class="fa fa-phone"></i> 0123 456 789 <br>
 
-<i class="fa fa-envelope"></i> contact@aibookstore.com
+<i class="fa fa-envelope"></i>
+
+<a href="mailto:contact@aibookstore.com"
+class="text-light text-decoration-none">
+
+[contact@aibookstore.com](mailto:contact@aibookstore.com)
+
+</a>
 
 </p>
 
 </div>
 
-
 <div class="col-md-4">
 
 <h5>Mạng xã hội</h5>
 
-<i class="fab fa-facebook fa-2x me-2"></i>
-<i class="fab fa-youtube fa-2x me-2"></i>
-<i class="fab fa-tiktok fa-2x"></i>
+<i class="fab fa-facebook social-icon"></i> <i class="fab fa-youtube social-icon"></i> <i class="fab fa-tiktok social-icon"></i>
 
 </div>
 
 </div>
-
 
 <hr>
 
 <p class="text-center">
 
-© 2026 Kho Sách Nhỏ
+© 2026 AI Bookstore
 
 </p>
 
 </div>
 
 </footer>
-
-
 
 <!-- Bootstrap JS -->
 

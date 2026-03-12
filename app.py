@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, redirect, session, flash
 import sqlite3
 from model.recommender import recommend_books
 from collections import Counter
+import math
+import random
 
 app = Flask(__name__)
 app.secret_key = "bookstore_secret"
@@ -35,13 +37,17 @@ def index():
     bestsellers = conn.execute(
         "SELECT * FROM books WHERE rating IS NOT NULL ORDER BY rating DESC LIMIT 12"
     ).fetchall()
-    
-    featured = books[:8]
-    recommendations = books[8:16]
-    
+
+    # AI recommendation cho homepage
+    try:
+        random_book = random.choice(books)
+        recommendations = recommend_books(random_book["title"])
+    except:
+        recommendations = []
+
+    featured = books[:12]
 
     conn.close()
-    
 
     return render_template(
         "index.html",
@@ -65,6 +71,10 @@ def books():
     category = request.args.get("category")
     sort = request.args.get("sort")
 
+    page = int(request.args.get("page", 1))
+    per_page = 12
+    offset = (page - 1) * per_page
+
     query = "SELECT * FROM books WHERE 1=1"
     params = []
 
@@ -82,6 +92,17 @@ def books():
     elif sort == "price_desc":
         query += " ORDER BY price DESC"
 
+    # tổng số sách
+    count_query = query.replace("SELECT *", "SELECT COUNT(*)")
+
+    total_books = conn.execute(count_query, params).fetchone()[0]
+
+    total_pages = (total_books // per_page) + (1 if total_books % per_page else 0)
+
+    # pagination
+    query += " LIMIT ? OFFSET ?"
+    params.extend([per_page, offset])
+
     books = conn.execute(query, params).fetchall()
 
     categories = conn.execute(
@@ -93,7 +114,9 @@ def books():
     return render_template(
         "books.html",
         books=books,
-        categories=categories
+        categories=categories,
+        page=page,
+        total_pages=total_pages
     )
 
 
@@ -117,6 +140,14 @@ def book_detail(id):
         recommendations = recommend_books(book["title"])
     except:
         recommendations = []
+        
+    # track view
+    if "views" not in session:
+        session["views"] = {}
+
+    views = session["views"]
+    views[str(id)] = views.get(str(id), 0) + 1
+    session["views"] = views
 
     conn.close()
 
@@ -186,14 +217,43 @@ def cart():
 
     total = 0
 
+    unique_books = {}
+
     for book in books:
-        total += book["price"]
+        unique_books[book["id"]] = book
+
+        total = sum(
+        book["price"] * counts.get(book["id"], 0)
+           for book in unique_books.values()
+        )
+    # AI recommend dựa trên sách trong giỏ hàng
+    recommendations = []
+
+    try:
+       titles = [b["title"] for b in books]           # tiêu đề các sách trong cart
+       rec_pool = []
+
+       for t in titles:
+        rec_pool += recommend_books(t)             # gợi ý cho từng sách
+
+        # loại bỏ sách đã có trong cart
+        cart_ids = {b["id"] for b in books}
+        rec_pool = [r for r in rec_pool if r["id"] not in cart_ids]
+
+         # lấy tối đa 8 sách gợi ý
+        recommendations = rec_pool[:8]
+
+    except:
+        recommendations = []
+        
+    conn.close()
 
     return render_template(
         "cart.html",
         books=books,
         counts=counts,
-        total=total
+        total=total,
+        recommendations=recommendations
     )
 
 
@@ -203,23 +263,46 @@ def cart():
 @app.route("/checkout", methods=["GET", "POST"])
 def checkout():
 
+    cart = session.get("cart", [])
+
+    conn = get_db()
+
+    books = []
+
+    for book_id in cart:
+        book = conn.execute(
+            "SELECT * FROM books WHERE id=?",
+            (book_id,)
+        ).fetchone()
+        books.append(book)
+
+    counts = Counter(cart)
+
+    total = 0
+    for book in books:
+        total += book["price"] * counts[book["id"]]
+
+    conn.close()
+
     if request.method == "POST":
 
         name = request.form["name"]
         phone = request.form["phone"]
         address = request.form["address"]
 
-        # demo: xóa giỏ hàng sau khi đặt
+        # demo: xóa giỏ hàng
         session["cart"] = []
 
         return render_template(
             "checkout.html",
-            success=True
+            success=True,
+            total=total
         )
 
     return render_template(
         "checkout.html",
-        success=False
+        success=False,
+        total=total
     )
 
 
@@ -235,17 +318,36 @@ def dashboard():
         "SELECT COUNT(*) FROM books"
     ).fetchone()[0]
 
+    # demo: tổng đơn hàng (tạm tính theo cart)
     total_orders = len(session.get("cart", []))
 
-    total_users = 10  # demo
+    # demo: lượt xem sách
+    views = session.get("views", {})
+
+    # lấy top 5 sách được xem nhiều nhất
+    top_books = sorted(
+        views.items(),
+        key=lambda x: x[1],
+        reverse=True
+    )[:5]
+
+    top_book_ids = [int(v[0]) for v in top_books]
+
+    top_view_books = []
+
+    if top_book_ids:
+        placeholders = ",".join(["?"] * len(top_book_ids))
+        query = f"SELECT * FROM books WHERE id IN ({placeholders})"
+        top_view_books = conn.execute(query, top_book_ids).fetchall()
+
+    conn.close()
 
     return render_template(
         "dashboard.html",
         total_books=total_books,
         total_orders=total_orders,
-        total_users=total_users
+        top_view_books=top_view_books
     )
-
 
 # ---------------------------
 # BLOG PAGE (MARKETING)

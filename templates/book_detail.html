@@ -4,7 +4,9 @@
 
 <div class="row mb-5">
 
+<!-- ========================= -->
 <!-- BOOK IMAGE -->
+<!-- ========================= -->
 
 <div class="col-lg-4">
 
@@ -17,46 +19,42 @@ style="max-height:420px; object-fit:cover;"
 </div>
 
 
+<!-- ========================= -->
 <!-- BOOK INFO -->
+<!-- ========================= -->
 
 <div class="col-lg-8">
 
 <h2 class="mb-3">
-
 {{ book.title }}
-
 </h2>
 
 <p>
-
 <b>Tác giả:</b> {{ book.author }}
-
 </p>
 
 <p>
-
 <b>Danh mục:</b> {{ book.category }}
-
 </p>
 
 
 <!-- RATING -->
 
-<div class="mb-2">
+<div class="mb-3">
 
 {% for i in range(1,6) %}
 
 {% if i <= book.rating|int %}
-
 <i class="fa fa-star text-warning"></i>
-
 {% else %}
-
 <i class="fa fa-star text-secondary"></i>
-
 {% endif %}
 
 {% endfor %}
+
+<span class="text-muted small">
+({{ book.rating }})
+</span>
 
 </div>
 
@@ -70,71 +68,117 @@ style="max-height:420px; object-fit:cover;"
 </h3>
 
 
-<!-- BUTTON -->
+<!-- ADD TO CART -->
 
 <a
 href="/add_to_cart/{{ book.id }}"
-class="btn btn-success btn-lg">
+class="btn btn-success btn-lg mb-3">
 
 <i class="fa fa-cart-plus"></i>
 Thêm vào giỏ hàng
 
 </a>
 
-</div>
 
-</div>
+<!-- ========================= -->
+<!-- DESCRIPTION -->
+<!-- ========================= -->
 
+<hr class="my-4">
 
-<hr class="my-5">
+<h5>📖 Mô tả sách</h5>
 
+<p class="text-muted">
 
-<!-- AI RECOMMENDATION -->
-
-<h4 class="mb-4">
-
-🤖 Sách gợi ý cho bạn
-
-</h4>
-
-
-<div class="row">
-
-{% for r in recommendations %}
-
-<div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-
-<div class="card shadow-sm h-100 book-card">
-
-<img
-src="{{ r.image }}"
-class="card-img-top"
-style="height:220px; object-fit:cover;"
->
-
-<div class="card-body d-flex flex-column">
-
-<h6 class="card-title">
-
-{{ r.title }}
-
-</h6>
-
-<p class="text-danger fw-bold">
-
-{{ "{:,.0f}".format(r.price) }} đ
+{{ book.content|truncate(500) }}
 
 </p>
 
-<div class="mt-auto">
+</div>
 
-<a
-href="/book/{{ r.id }}"
-class="btn btn-sm btn-outline-primary">
+</div>
 
-Chi tiết
 
-</a>
+<!-- ========================= -->
+<!-- AI RECOMMENDATION -->
+<!-- ========================= -->
+
+<hr class="my-5">
+
+<h4 class="mt-5 mb-3 d-flex justify-content-between">
+
+🤖 Sách gợi ý cho bạn
+
+<div>
+
+<button class="slider-btn"
+onclick="slideLeft('recommend')">
+
+<i class="fa fa-chevron-left"></i>
+
+</button>
+
+<button class="slider-btn"
+onclick="slideRight('recommend')">
+
+<i class="fa fa-chevron-right"></i>
+
+</button>
+
+</div>
+
+</h4>
+
+<div class="slider-wrapper">
+
+<div class="book-slider"
+id="recommend">
+
+{% for book in recommendations %}
+
+<div class="book-item">
+
+<div class="card book-card shadow-sm h-100">
+
+<img src="{{ book.image }}"
+class="card-img-top"
+style="height:220px; object-fit:cover;">
+
+<div class="card-body d-flex flex-column">
+
+<h6 class="fw-bold">{{ book.title }}</h6>
+
+<p class="text-muted small mb-1">
+{{ book.author }}
+</p>
+
+<div class="mb-2">
+
+{% for i in range(1,6) %}
+
+{% if i <= book.rating|default(0)|int %} <i class="fa fa-star text-warning"></i>
+{% else %} <i class="fa fa-star text-secondary"></i>
+{% endif %}
+
+{% endfor %}
+
+</div>
+
+<p class="text-danger fw-bold">
+{{ "{:,.0f}".format(book.price) }} đ
+</p>
+
+<div class="mt-auto d-flex gap-2">
+
+<a href="/book/{{ book.id }}"
+class="btn btn-sm btn-outline-primary w-50">
+<i class="fa fa-eye"></i> Chi tiết
+
+<a href="/add_to_cart/{{ book.id }}"
+data-bs-toggle="tooltip"
+data-bs-placement="top"
+title="Thêm vào giỏ hàng"
+class="btn btn-sm btn-success"> <i class="fa fa-cart-plus"></i> </a>
 
 </div>
 
@@ -145,6 +189,12 @@ Chi tiết
 </div>
 
 {% endfor %}
+
+</div>
+
+</div>
+
+</div>
 
 </div>
 

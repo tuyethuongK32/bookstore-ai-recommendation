@@ -29,7 +29,7 @@ Thanh toán đơn hàng
 </h3>
 
 <p>
-Cảm ơn bạn đã mua sách tại Kho Sách Nhỏ.
+Cảm ơn bạn đã mua sách tại AI Bookstore.
 </p>
 
 <a href="/" class="btn btn-primary mt-3">
@@ -39,6 +39,16 @@ Quay về trang chủ
 </div>
 
 {% else %}
+
+<div class="alert alert-secondary">
+
+<b>Tổng tiền đơn hàng:</b>
+
+<span class="text-danger">
+{{ "{:,.0f}".format(total) }} đ
+</span>
+
+</div>
 
 <form method="post">
 
@@ -65,9 +75,10 @@ Số điện thoại
 </label>
 
 <input
-type="text"
+type="tel"
 name="phone"
 class="form-control"
+pattern="[0-9]{9,11}"
 placeholder="Nhập số điện thoại"
 required>
 
@@ -85,8 +96,7 @@ name="address"
 class="form-control"
 rows="3"
 placeholder="Nhập địa chỉ giao hàng"
-required>
-</textarea>
+required></textarea>
 
 </div>
 

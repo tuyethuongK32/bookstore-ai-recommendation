@@ -33,7 +33,10 @@ và mở rộng tri thức mỗi ngày.
 
 <div class="row g-4">
 
+
+<!-- ===================== -->
 <!-- BLOG 1 : VĂN HỌC -->
+<!-- ===================== -->
 
 <div class="col-lg-6">
 
@@ -58,6 +61,12 @@ con người và cảm xúc thông qua những câu chuyện đầy ý nghĩa.
 
 <h6 class="mb-3">📚 Sách gợi ý</h6>
 
+{% if literature|length == 0 %}
+
+<p class="text-muted">Chưa có sách.</p>
+
+{% endif %}
+
 {% for book in literature %}
 
 <div class="d-flex mb-3">
@@ -71,7 +80,29 @@ style="width:60px;height:80px;object-fit:cover;margin-right:10px;">
 
 <br>
 
-<span class="text-danger">
+<small class="text-muted">
+{{ book.author }}
+</small>
+
+<br>
+
+<!-- RATING -->
+
+<div class="text-warning small">
+
+{% for i in range(1,6) %}
+
+{% if i <= book.rating|int %}
+<i class="fa fa-star"></i>
+{% else %}
+<i class="fa fa-star text-secondary"></i>
+{% endif %}
+
+{% endfor %}
+
+</div>
+
+<span class="text-danger fw-bold">
 {{ "{:,.0f}".format(book.price) }} đ
 </span>
 
@@ -98,7 +129,9 @@ Xem sách
 
 
 
+<!-- ===================== -->
 <!-- BLOG 2 : TÂM LÝ -->
+<!-- ===================== -->
 
 <div class="col-lg-6">
 
@@ -123,6 +156,12 @@ cải thiện kỹ năng giao tiếp và phát triển tư duy tích cực.
 
 <h6 class="mb-3">📚 Sách gợi ý</h6>
 
+{% if psychology|length == 0 %}
+
+<p class="text-muted">Chưa có sách.</p>
+
+{% endif %}
+
 {% for book in psychology %}
 
 <div class="d-flex mb-3">
@@ -136,7 +175,27 @@ style="width:60px;height:80px;object-fit:cover;margin-right:10px;">
 
 <br>
 
-<span class="text-danger">
+<small class="text-muted">
+{{ book.author }}
+</small>
+
+<br>
+
+<div class="text-warning small">
+
+{% for i in range(1,6) %}
+
+{% if i <= book.rating|int %}
+<i class="fa fa-star"></i>
+{% else %}
+<i class="fa fa-star text-secondary"></i>
+{% endif %}
+
+{% endfor %}
+
+</div>
+
+<span class="text-danger fw-bold">
 {{ "{:,.0f}".format(book.price) }} đ
 </span>
 
@@ -163,7 +222,9 @@ Xem sách
 
 
 
+<!-- ===================== -->
 <!-- BLOG 3 : THIẾU NHI -->
+<!-- ===================== -->
 
 <div class="col-lg-6">
 
@@ -188,6 +249,12 @@ khả năng đọc hiểu và hình thành thói quen đọc sách.
 
 <h6 class="mb-3">📚 Sách gợi ý</h6>
 
+{% if children|length == 0 %}
+
+<p class="text-muted">Chưa có sách.</p>
+
+{% endif %}
+
 {% for book in children %}
 
 <div class="d-flex mb-3">
@@ -201,7 +268,27 @@ style="width:60px;height:80px;object-fit:cover;margin-right:10px;">
 
 <br>
 
-<span class="text-danger">
+<small class="text-muted">
+{{ book.author }}
+</small>
+
+<br>
+
+<div class="text-warning small">
+
+{% for i in range(1,6) %}
+
+{% if i <= book.rating|int %}
+<i class="fa fa-star"></i>
+{% else %}
+<i class="fa fa-star text-secondary"></i>
+{% endif %}
+
+{% endfor %}
+
+</div>
+
+<span class="text-danger fw-bold">
 {{ "{:,.0f}".format(book.price) }} đ
 </span>
 
@@ -228,7 +315,9 @@ Xem sách
 
 
 
+<!-- ===================== -->
 <!-- BLOG 4 : GIÁO DỤC -->
+<!-- ===================== -->
 
 <div class="col-lg-6">
 
@@ -253,6 +342,12 @@ nâng cao tư duy và học hỏi thêm nhiều điều mới.
 
 <h6 class="mb-3">📚 Sách gợi ý</h6>
 
+{% if education|length == 0 %}
+
+<p class="text-muted">Chưa có sách.</p>
+
+{% endif %}
+
 {% for book in education %}
 
 <div class="d-flex mb-3">
@@ -266,7 +361,27 @@ style="width:60px;height:80px;object-fit:cover;margin-right:10px;">
 
 <br>
 
-<span class="text-danger">
+<small class="text-muted">
+{{ book.author }}
+</small>
+
+<br>
+
+<div class="text-warning small">
+
+{% for i in range(1,6) %}
+
+{% if i <= book.rating|int %}
+<i class="fa fa-star"></i>
+{% else %}
+<i class="fa fa-star text-secondary"></i>
+{% endif %}
+
+{% endfor %}
+
+</div>
+
+<span class="text-danger fw-bold">
 {{ "{:,.0f}".format(book.price) }} đ
 </span>
 
@@ -290,6 +405,7 @@ Xem sách
 </div>
 
 </div>
+
 
 </div>
 
