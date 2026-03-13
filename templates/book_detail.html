@@ -2,6 +2,21 @@
 
 {% block content %}
 
+<!--Thống kê sách category được xem phổ biến và sách được xem -->
+
+<script>
+gtag('event','view_item',{
+currency:'VND',
+value: {{ book.price }},
+items:[{
+item_id:"{{ book.id }}",
+item_name:"{{ book.title }}",
+item_category:"{{ book.category }}",
+price: {{ book.price }}
+}]
+});
+</script>
+
 <div class="row mb-5">
 
 <!-- ========================= -->
@@ -72,6 +87,7 @@ style="max-height:420px; object-fit:cover;"
 
 <a
 href="/add_to_cart/{{ book.id }}"
+onclick="trackAddToCart('{{ book.title }}', {{ book.price }})"
 class="btn btn-success btn-lg mb-3">
 
 <i class="fa fa-cart-plus"></i>
@@ -171,13 +187,16 @@ style="height:220px; object-fit:cover;">
 <div class="mt-auto d-flex gap-2">
 
 <a href="/book/{{ book.id }}"
+onclick="trackAIRec('{{ book.title }}')"
 class="btn btn-sm btn-outline-primary w-50">
 <i class="fa fa-eye"></i> Chi tiết
+</a>
 
 <a href="/add_to_cart/{{ book.id }}"
 data-bs-toggle="tooltip"
 data-bs-placement="top"
 title="Thêm vào giỏ hàng"
+onclick="trackAddToCart('{{ book.title }}', {{ book.price }})"
 class="btn btn-sm btn-success"> <i class="fa fa-cart-plus"></i> </a>
 
 </div>
@@ -197,5 +216,31 @@ class="btn btn-sm btn-success"> <i class="fa fa-cart-plus"></i> </a>
 </div>
 
 </div>
+
+<script>
+
+function trackAddToCart(title, price){
+
+gtag('event','add_to_cart',{
+currency:'VND',
+value: price,
+items:[{
+item_name:title,
+price:price,
+quantity:1
+}]
+})
+
+}
+
+function trackAIRec(title){
+
+gtag('event','ai_recommendation_click',{
+item_name:title
+})
+
+}
+
+</script>
 
 {% endblock %}

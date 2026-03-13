@@ -2,6 +2,13 @@
 
 {% block content %}
 
+<script>
+gtag('event','view_checkout',{
+currency:'VND',
+value: {{ total }}
+});
+</script>
+
 <div class="row justify-content-center">
 
 <div class="col-md-6">
@@ -20,6 +27,14 @@ Thanh toán đơn hàng
 <div class="card-body">
 
 {% if success %}
+
+<script>
+gtag('event','purchase',{
+transaction_id: "{{ range(100000,999999)|random }}",
+value: {{ total }},
+currency: "VND"
+});
+</script>
 
 <div class="text-center">
 
@@ -103,6 +118,7 @@ required></textarea>
 
 <button
 type="submit"
+onclick="trackPlaceOrder({{ total }})"
 class="btn btn-success w-100">
 
 <i class="fa fa-check"></i>
@@ -121,5 +137,16 @@ class="btn btn-success w-100">
 </div>
 
 </div>
+
+<script>
+function trackPlaceOrder(total){
+
+gtag('event','add_payment_info',{
+currency:'VND',
+value: total
+})
+
+}
+</script>
 
 {% endblock %}

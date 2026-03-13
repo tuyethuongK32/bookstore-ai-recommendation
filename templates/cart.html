@@ -2,6 +2,23 @@
 
 {% block content %}
 
+<script>
+gtag('event','view_cart',{
+currency:'VND',
+value: {{ total }},
+items:[
+{% for book in books|unique(attribute="id") %}
+{
+item_id:"{{ book.id }}",
+item_name:"{{ book.title }}",
+price: {{ book.price }},
+quantity: {{ counts[book.id] }}
+},
+{% endfor %}
+]
+});
+</script>
+
 <h3 class="mb-4">🛒 Giỏ hàng của bạn</h3>
 
 {% if books|length == 0 %}
@@ -113,6 +130,7 @@ Tổng tiền:
 </h4>
 
 <a href="/checkout"
+onclick="trackCheckout({{ total }})"
 class="btn btn-success btn-lg mt-2">
 
 <i class="fa fa-credit-card"></i>
@@ -202,6 +220,7 @@ style="height:220px; object-fit:cover;"
 <div class="mt-auto">
 
 <a href="/book/{{ r.id }}"
+onclick="trackAIRec('{{ r.title }}')"
 class="btn btn-sm btn-outline-primary">
 <i class="fa fa-eye"></i> Chi tiết
 </a>
@@ -210,6 +229,7 @@ class="btn btn-sm btn-outline-primary">
 data-bs-toggle="tooltip"
 data-bs-placement="top"
 title="Thêm vào giỏ hàng"
+onclick="trackAddToCart('{{ r.title }}', {{ r.price }})"
 class="btn btn-sm btn-success">
 
 <i class="fa fa-cart-plus"></i>
@@ -233,5 +253,40 @@ class="btn btn-sm btn-success">
 {% endif %}
 
 {% endif %}
+
+<script>
+
+function trackCheckout(total){
+
+gtag('event','begin_checkout',{
+currency:'VND',
+value: total
+})
+
+}
+
+function trackAIRec(title){
+
+gtag('event','ai_recommendation_click',{
+item_name:title
+})
+
+}
+
+function trackAddToCart(title,price){
+
+gtag('event','add_to_cart',{
+currency:'VND',
+value:price,
+items:[{
+item_name:title,
+price:price,
+quantity:1
+}]
+})
+
+}
+
+</script>
 
 {% endblock %}
