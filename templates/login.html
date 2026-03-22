@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="d-flex justify-content-center align-items-center" style="min-height: 70vh;">
+  <div class="card shadow-sm p-4" style="width: 100%; max-width: 400px;">
+    <h3 class="text-center text-success mb-4">Đăng nhập</h3>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="mb-3">
+          {% for message in messages %}
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <form method="post">
+      <div class="mb-3">
+        <input name="username" class="form-control" placeholder="Username" required>
+      </div>
+
+      <div class="mb-3">
+        <input type="password" name="password" class="form-control" placeholder="Password" required>
+      </div>
+
+      <button class="btn btn-success w-100">Đăng nhập</button>
+    </form>
+
+    <p class="text-center mt-3 mb-0">
+      Chưa có tài khoản? 
+      <a href="/register" class="text-success fw-bold">Đăng ký</a>
+    </p>
+  </div>
+</div>
+
+{% endblock %}

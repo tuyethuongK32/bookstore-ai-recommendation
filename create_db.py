@@ -8,7 +8,7 @@ df = pd.read_excel("dataset/books_clean.xlsx")
 conn = sqlite3.connect("database/database.db")
 cursor = conn.cursor()
 
-cursor.execute("""
+cursor.executescript("""
 CREATE TABLE IF NOT EXISTS books (
     id INTEGER PRIMARY KEY,
     title TEXT,
@@ -18,8 +18,26 @@ CREATE TABLE IF NOT EXISTS books (
     rating REAL,
     image TEXT,
     content TEXT
-)
+);
+
+CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT UNIQUE,
+    password TEXT,
+    full_name TEXT,
+    email TEXT,
+    favorite_category TEXT
+);
+
+CREATE TABLE IF NOT EXISTS user_behavior (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    book_id INTEGER,
+    action TEXT,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+);
 """)
+
 
 # xóa dữ liệu cũ (tránh insert trùng)
 cursor.execute("DELETE FROM books")

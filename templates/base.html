@@ -1,348 +1,328 @@
-<!DOCTYPE html>
+<!doctype html>
 
 <html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<head>
+    <title>AI Bookstore</title>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- SEO META -->
 
-<title>AI Bookstore</title>
+    <meta
+      name="description"
+      content="Website thương mại điện tử bán sách tích hợp hệ thống gợi ý bằng Machine Learning."
+    />
+    <meta
+      name="keywords"
+      content="sách, bookstore, ecommerce, machine learning, recommendation system"
+    />
 
-<!-- SEO META -->
+    <!-- Bootstrap -->
 
-<meta name="description" content="Website thương mại điện tử bán sách tích hợp hệ thống gợi ý bằng Machine Learning.">
-<meta name="keywords" content="sách, bookstore, ecommerce, machine learning, recommendation system">
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    />
 
-<!-- Bootstrap -->
+    <!-- FontAwesome -->
 
-<link rel="stylesheet"
-href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
 
-<!-- FontAwesome -->
+    <!-- Custom CSS -->
 
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
 
-<!-- Custom CSS -->
+    <!-- Google Analytics -->
 
-<link rel="stylesheet"
-href="{{ url_for('static', filename='css/style.css') }}">
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-399MD56RZV"
+    ></script>
 
-<!-- Google Analytics -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
 
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-399MD56RZV"></script>
+      function gtag() {
+        dataLayer.push(arguments);
+      }
 
-<script>
-window.dataLayer = window.dataLayer || [];
+      gtag("js", new Date());
+      gtag("config", "G-399MD56RZV");
+    </script>
 
-function gtag(){
-dataLayer.push(arguments);
-}
+    <!-- SLIDER SCRIPT -->
 
-gtag('js', new Date());
-gtag('config', 'G-399MD56RZV');
-</script>
+    <script>
+      let sliderIndex = {};
 
-<!-- SLIDER SCRIPT -->
+      function slideRight(id) {
+        const slider = document.getElementById(id);
 
-<script>
+        if (!sliderIndex[id]) sliderIndex[id] = 0;
 
-let sliderIndex = {}
+        const total = slider.children.length;
+        const maxIndex = total - 4;
 
-function slideRight(id){
+        sliderIndex[id] += 4;
 
-const slider = document.getElementById(id)
+        if (sliderIndex[id] > maxIndex) {
+          sliderIndex[id] = 0;
+        }
 
-if(!sliderIndex[id]) sliderIndex[id] = 0
+        slider.style.transform = "translateX(-" + sliderIndex[id] * 25 + "%)";
+      }
 
-const total = slider.children.length
-const maxIndex = total - 4
+      function slideLeft(id) {
+        const slider = document.getElementById(id);
 
-sliderIndex[id] += 4
+        if (!sliderIndex[id]) sliderIndex[id] = 0;
 
-if(sliderIndex[id] > maxIndex){
-sliderIndex[id] = 0
-}
+        const total = slider.children.length;
+        const maxIndex = total - 4;
 
-slider.style.transform =
-"translateX(-"+(sliderIndex[id] * 25)+"%)"
+        sliderIndex[id] -= 4;
 
-}
+        if (sliderIndex[id] < 0) {
+          sliderIndex[id] = maxIndex;
+        }
 
-function slideLeft(id){
+        slider.style.transform = "translateX(-" + sliderIndex[id] * 25 + "%)";
+      }
+    </script>
+  </head>
 
-const slider = document.getElementById(id)
+  <body>
+    <!-- TOP BAR -->
 
-if(!sliderIndex[id]) sliderIndex[id] = 0
-
-const total = slider.children.length
-const maxIndex = total - 4
-
-sliderIndex[id] -= 4
-
-if(sliderIndex[id] < 0){
-sliderIndex[id] = maxIndex
-}
-
-slider.style.transform =
-"translateX(-"+(sliderIndex[id] * 25)+"%)"
-
-}
-
-</script>
-
-</head>
-
-<body>
-
-<!-- TOP BAR -->
-
-<div class="bg-success text-white py-1">
-
-<div class="container d-flex justify-content-between small">
-
-<div>
-
-<i class="fa fa-phone"></i> 0123 456 789
-
-<i class="fa fa-envelope ms-3"></i>
-
-<a href="mailto:hotro@aibookstore.com" class="text-white text-decoration-none">
-hotro@aibookstore.com
-</a>
-
-</div>
-
-<div>
-
-<i class="fa fa-map-marker-alt"></i> Tỉnh Đồng Tháp
-
-</div>
-
-</div>
-
-</div>
-
-<!-- HEADER -->
-
-<div class="bg-white shadow-sm">
-
-<div class="container py-3">
-
-<div class="row align-items-center">
-
-<!-- LOGO -->
-
-<div class="col-md-3">
-
-<a href="/" class="text-decoration-none">
-
-<h3 class="text-success fw-bold">
-AI Book<span class="text-dark">Store</span>
-</h3>
-
-</a>
-
-</div>
-
-<!-- SEARCH -->
-
-<div class="col-md-6">
-
-<form action="/books">
-
-<div class="input-group">
-
-<input
-type="text"
-name="search"
-class="form-control"
-placeholder="Tìm kiếm sách, tác giả...">
-
-<button class="btn btn-success">
-
-<i class="fa fa-search"></i> Tìm kiếm
-
-</button>
-
-</div>
-
-</form>
-
-</div>
-
-<!-- CART -->
+    <div class="bg-success text-white py-1">
+      <div class="container d-flex justify-content-between small">
+        <div>
+          <i class="fa fa-phone"></i> 0123 456 789
+
+          <i class="fa fa-envelope ms-3"></i>
+
+          <a
+            href="mailto:hotro@aibookstore.com"
+            class="text-white text-decoration-none"
+          >
+            hotro@aibookstore.com
+          </a>
+        </div>
+
+        <div><i class="fa fa-map-marker-alt"></i> Tỉnh Đồng Tháp</div>
+      </div>
+    </div>
+
+    <!-- HEADER -->
+
+    <div class="bg-white shadow-sm">
+      <div class="container py-3">
+        <div class="row align-items-center">
+          <!-- LOGO -->
+
+          <div class="col-md-3">
+            <a href="/" class="text-decoration-none">
+              <h3 class="text-success fw-bold">
+                AI Book<span class="text-dark">Store</span>
+              </h3>
+            </a>
+          </div>
+
+          <!-- SEARCH -->
+
+          <div class="col-md-6">
+            <form action="/books">
+              <div class="input-group">
+                <input
+                  type="text"
+                  name="search"
+                  class="form-control"
+                  placeholder="Tìm kiếm sách, tác giả..."
+                />
+
+                <button class="btn btn-success">
+                  <i class="fa fa-search"></i> Tìm kiếm
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- CART -->
 
 <div class="col-md-3 text-end">
 
-<a href="/cart" class="btn btn-warning">
+  {% if session.get("user_id") %}
+  <!-- Dòng 1: Xin chào -->
+  <div class="mb-1">
+    Xin chào, <strong>{{ session.get("username") }}</strong>
+  </div>
 
-<i class="fa fa-shopping-cart"></i>
+  <!-- Dòng 2: Nút Lịch sử + Đăng xuất + Giỏ hàng -->
+  <div class="d-flex justify-content-end gap-2 flex-nowrap">
+    <a href="/history" class="btn btn-info btn-sm d-flex align-items-center gap-1 text-nowrap">
+      <i class="fa fa-history"></i> Lịch sử
+    </a>
 
-Giỏ hàng ({{ session.get('cart', [])|length }})
+    <a href="/logout" class="btn btn-danger btn-sm d-flex align-items-center gap-1 text-nowrap">
+      <i class="fa fa-sign-out-alt"></i> Đăng xuất
+    </a>
 
-</a>
+    <a href="/cart" class="btn btn-warning btn-sm d-flex align-items-center gap-1 position-relative text-nowrap">
+      <i class="fa fa-shopping-cart"></i> Giỏ hàng
+      <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+        {{ session.get('cart', [])|length }}
+      </span>
+    </a>
+  </div>
 
-</div>
+  {% else %}
+  <!-- User chưa đăng nhập: Đăng nhập + Đăng ký + Giỏ hàng -->
+  <div class="d-flex justify-content-end gap-2 flex-nowrap">
+    <a href="/login" class="btn btn-outline-success btn-sm d-flex align-items-center gap-1 text-nowrap">
+      <i class="fa fa-sign-in-alt"></i> Đăng nhập
+    </a>
 
-</div>
+    <a href="/register" class="btn btn-success btn-sm d-flex align-items-center gap-1 text-nowrap">
+      <i class="fa fa-user-plus"></i> Đăng ký
+    </a>
 
-</div>
-
-</div>
-
-<!-- NAVBAR -->
-
-<nav class="navbar navbar-expand-lg custom-navbar">
-
-<div class="container">
-
-<button class="navbar-toggler"
-type="button"
-data-bs-toggle="collapse"
-data-bs-target="#navbarNav">
-
-<span class="navbar-toggler-icon"></span>
-
-</button>
-
-<div class="collapse navbar-collapse" id="navbarNav">
-
-<ul class="navbar-nav">
-
-<li class="nav-item">
-<a class="nav-link" href="/">Trang chủ</a>
-</li>
-
-<li class="nav-item">
-<a class="nav-link" href="/books">Sách</a>
-</li>
-
-<li class="nav-item">
-<a class="nav-link" href="/blog">Blog</a>
-</li>
-
-</ul>
+    <a href="/cart" class="btn btn-warning btn-sm d-flex align-items-center gap-1 position-relative text-nowrap">
+      <i class="fa fa-shopping-cart"></i> Giỏ hàng
+      <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+        {{ session.get('cart', [])|length }}
+      </span>
+    </a>
+  </div>
+  {% endif %}
 
 </div>
 
-</div>
+    <!-- NAVBAR -->
 
-</nav>
+    <nav class="navbar navbar-expand-lg custom-navbar">
+      <div class="container">
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
 
-<!-- FLASH MESSAGE -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="/">Trang chủ</a>
+            </li>
 
-{% with messages = get_flashed_messages() %}
-{% if messages %}
+            <li class="nav-item">
+              <a class="nav-link" href="/books">Sách</a>
+            </li>
 
-<div class="container mt-3">
+            <li class="nav-item">
+              <a class="nav-link" href="/blog">Blog</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
 
-{% for message in messages %}
+    <!-- FLASH MESSAGE -->
 
-<div class="alert alert-success alert-dismissible fade show">
+    {% with messages = get_flashed_messages() %} {% if messages %}
 
-{{ message }}
+    <div class="container mt-3">
+      {% for message in messages %}
 
-<button type="button"
-class="btn-close"
-data-bs-dismiss="alert"></button>
+      <div class="alert alert-success alert-dismissible fade show">
+        {{ message }}
 
-</div>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+        ></button>
+      </div>
 
-{% endfor %}
+      {% endfor %}
+    </div>
 
-</div>
+    {% endif %} {% endwith %}
 
-{% endif %}
-{% endwith %}
+    <!-- MAIN CONTENT -->
 
-<!-- MAIN CONTENT -->
+    <div class="container mt-4">{% block content %} {% endblock %}</div>
 
-<div class="container mt-4">
+    <!-- FOOTER -->
 
-{% block content %}
-{% endblock %}
+    <footer class="custom-footer mt-5 pt-5 pb-4">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4">
+            <h5>AI Bookstore</h5>
 
-</div>
+            <p>
+              Website thương mại điện tử bán sách tích hợp hệ thống gợi ý sử
+              dụng Machine Learning.
+            </p>
+          </div>
 
-<!-- FOOTER -->
+          <div class="col-md-4">
+            <h5>Liên hệ</h5>
 
-<footer class="custom-footer mt-5 pt-5 pb-4">
+            <p>
+              <i class="fa fa-map-marker-alt"></i> Tỉnh Đồng Tháp <br />
 
-<div class="container">
+              <i class="fa fa-phone"></i> 0123 456 789 <br />
 
-<div class="row">
+              <i class="fa fa-envelope"></i>
 
-<div class="col-md-4">
+              <a
+                href="mailto:contact@aibookstore.com"
+                class="text-light text-decoration-none"
+              >
+                [contact@aibookstore.com](mailto:contact@aibookstore.com)
+              </a>
+            </p>
+          </div>
 
-<h5>AI Bookstore</h5>
+          <div class="col-md-4">
+            <h5>Mạng xã hội</h5>
 
-<p>
+            <a
+              href="https://www.facebook.com/profile.php?id=61583722873666"
+              target="_blank"
+            >
+              <i class="fab fa-facebook social-icon"></i>
+            </a>
 
-Website thương mại điện tử bán sách tích hợp hệ thống gợi ý
-sử dụng Machine Learning.
+            <!-- <i class="fab fa-youtube social-icon"></i> -->
 
-</p>
+            <a
+              href="https://www.tiktok.com/@cochunhobookstoreai/video/7616656373614529799"
+              target="_blank"
+            >
+              <i class="fab fa-tiktok social-icon"></i>
+            </a>
+          </div>
+        </div>
 
-</div>
+        <hr />
 
-<div class="col-md-4">
+        <p class="text-center">© 2026 AI Bookstore</p>
+      </div>
+    </footer>
 
-<h5>Liên hệ</h5>
+    <!-- Bootstrap JS -->
 
-<p>
-
-<i class="fa fa-map-marker-alt"></i> Tỉnh Đồng Tháp <br>
-
-<i class="fa fa-phone"></i> 0123 456 789 <br>
-
-<i class="fa fa-envelope"></i>
-
-<a href="mailto:contact@aibookstore.com"
-class="text-light text-decoration-none">
-
-[contact@aibookstore.com](mailto:contact@aibookstore.com)
-
-</a>
-
-</p>
-
-</div>
-
-<div class="col-md-4">
-
-<h5>Mạng xã hội</h5>
-
-<a href="https://www.facebook.com/profile.php?id=61583722873666" target="_blank">
-    <i class="fab fa-facebook social-icon"></i>
-</a>
-
-<!-- <i class="fab fa-youtube social-icon"></i> -->
-
-<a href="https://www.tiktok.com/@cochunhobookstoreai/video/7616656373614529799" target="_blank">
-    <i class="fab fa-tiktok social-icon"></i>
-</a>
-
-</div>
-
-</div>
-
-<hr>
-
-<p class="text-center">
-
-© 2026 AI Bookstore
-
-</p>
-
-</div>
-
-</footer>
-
-<!-- Bootstrap JS -->
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
 </html>

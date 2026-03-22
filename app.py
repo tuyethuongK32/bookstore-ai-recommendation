@@ -4,6 +4,8 @@ from model.recommender import recommend_books
 from collections import Counter
 import math
 import random
+from werkzeug.security import generate_password_hash, check_password_hash
+from model.recommender import recommend_for_user_db
 
 app = Flask(__name__)
 app.secret_key = "bookstore_secret"
@@ -39,10 +41,26 @@ def index():
     ).fetchall()
 
     # AI recommendation cho homepage
+    recent_books = []
     try:
-        random_book = random.choice(books)
-        recommendations = recommend_books(random_book["title"])
-    except:
+        if "user_id" in session:
+            recent_books = conn.execute("""
+                SELECT DISTINCT b.*
+                FROM user_behavior ub
+                JOIN books b ON ub.book_id = b.id
+                WHERE ub.user_id = ?
+                ORDER BY ub.timestamp DESC
+                LIMIT 8
+            """, (session["user_id"],)).fetchall()
+
+            if recent_books:
+                # Lấy title sách gần đây nhất để gợi ý
+                recommendations = recommend_books(recent_books[0]["title"])
+            elif books:
+                recommendations = recommend_books(random.choice(books)["title"])
+        elif books:
+            recommendations = recommend_books(random.choice(books)["title"])
+    except Exception as e:
         recommendations = []
 
     featured = books[:12]
@@ -55,7 +73,8 @@ def index():
         categories=categories,
         bestsellers=bestsellers,
         recommendations=recommendations,
-        featured=featured
+        featured=featured,
+        recent_books=recent_books
     )
 
 
@@ -135,6 +154,9 @@ def book_detail(id):
 
     if not book:
         return "Book not found"
+    
+    if "user_id" in session:
+       save_behavior(session["user_id"], id, "view")
 
     try:
         recommendations = recommend_books(book["title"])
@@ -171,6 +193,9 @@ def add_to_cart(id):
     session.modified = True
 
     flash("Đã thêm sách vào giỏ hàng!")
+    
+    if "user_id" in session:
+      save_behavior(session["user_id"], id, "cart")
 
     return redirect("/cart")
 
@@ -234,14 +259,13 @@ def cart():
        rec_pool = []
 
        for t in titles:
-        rec_pool += recommend_books(t)             # gợi ý cho từng sách
+          rec_pool += recommend_books(t)
 
-        # loại bỏ sách đã có trong cart
-        cart_ids = {b["id"] for b in books}
-        rec_pool = [r for r in rec_pool if r["id"] not in cart_ids]
+       # lọc sau khi gom xong
+       cart_ids = {b["id"] for b in books}
+       rec_pool = [r for r in rec_pool if r["id"] not in cart_ids]
 
-         # lấy tối đa 8 sách gợi ý
-        recommendations = rec_pool[:8]
+       recommendations = rec_pool[:8]
 
     except:
         recommendations = []
@@ -387,6 +411,158 @@ def blog():
         children=children,
         education=education
     )
+    
+#----------------------------
+# Register
+#-----------------------------
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    conn = get_db()
+
+    categories = conn.execute(
+        "SELECT DISTINCT category FROM books"
+    ).fetchall()
+
+    if request.method == "POST":
+        username = request.form.get("username")
+        password_raw = request.form.get("password")
+        full_name = request.form.get("full_name")
+        email = request.form.get("email")
+        favorite_category = request.form.get("favorite_category")
+
+        # ✅ Validate cơ bản
+        if not username or not password_raw:
+            flash("Vui lòng nhập đầy đủ thông tin")
+            conn.close()
+            return render_template("register.html", categories=categories)
+
+        password = generate_password_hash(password_raw)
+
+        try:
+            conn.execute(
+                """INSERT INTO users 
+                (username, password, full_name, email, favorite_category) 
+                VALUES (?, ?, ?, ?, ?)""",
+                (username, password, full_name, email, favorite_category)
+            )
+            conn.commit()
+
+            # ✅ AUTO LOGIN (KHÔNG redirect login nữa)
+            user_id = conn.execute(
+                "SELECT last_insert_rowid()"
+            ).fetchone()[0]
+
+            session["user_id"] = user_id
+            session["username"] = username
+
+            flash("Đăng ký thành công 🎉")
+            conn.close()
+
+            return redirect("/")   # 👉 về trang chủ luôn
+
+        except:
+            flash("Username đã tồn tại")
+
+    conn.close()
+    return render_template("register.html", categories=categories)
+
+#---------------------------
+# Login
+#---------------------------
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    conn = get_db()
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+
+        user = conn.execute(
+            "SELECT * FROM users WHERE username=?",
+            (username,)
+        ).fetchone()
+
+        if user and check_password_hash(user["password"], password):
+            session["user_id"] = user["id"]
+            session["username"] = user["username"]
+            flash("Đăng nhập thành công")
+            conn.close()
+            return redirect("/")
+        else:
+            flash("Sai thông tin")
+
+    conn.close()
+    return render_template("login.html")
+
+#--------------------------
+# Logout
+#---------------------------
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/")
+
+#---------------------------
+# Click
+#--
+@app.route("/click/<int:id>")
+def track_click(id):
+    if "user_id" in session:
+        save_behavior(session["user_id"], id, "click")
+    return redirect(f"/book/{id}")
+
+
+#----------------------------
+# History
+#----------------------------
+# ---------------------------
+# USER HISTORY
+# ---------------------------
+@app.route("/history")
+def history():
+
+    if "user_id" not in session:
+        return redirect("/login")
+
+    conn = get_db()
+
+    rows = conn.execute("""
+        SELECT b.*, ub.action, ub.timestamp
+        FROM user_behavior ub
+        JOIN books b ON ub.book_id = b.id
+        WHERE ub.user_id = ?
+        ORDER BY ub.timestamp DESC
+        LIMIT 20
+    """, (session["user_id"],)).fetchall()
+
+    conn.close()
+
+    return render_template("history.html", histories=rows)
+
+def save_behavior(user_id, book_id, action):
+    conn = get_db()
+
+    conn.execute(
+        "INSERT INTO user_behavior (user_id, book_id, action) VALUES (?, ?, ?)",
+        (user_id, book_id, action)
+    )
+
+    # 🎯 UPDATE FAVORITE CATEGORY
+    conn.execute("""
+        UPDATE users
+        SET favorite_category = (
+            SELECT b.category
+            FROM user_behavior ub
+            JOIN books b ON ub.book_id = b.id
+            WHERE ub.user_id = ?
+            GROUP BY b.category
+            ORDER BY COUNT(*) DESC
+            LIMIT 1
+        )
+        WHERE id = ?
+    """, (user_id, user_id))
+
+    conn.commit()
+    conn.close()
 
 # ---------------------------
 # RUN APP

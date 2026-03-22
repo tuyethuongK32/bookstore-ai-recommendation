@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3>📊 Lịch sử hoạt động</h3>
+
+{% if histories|length == 0 %}
+<p>Bạn chưa có hoạt động nào.</p>
+{% endif %}
+
+<div class="row">
+
+{% for item in histories %}
+
+<div class="col-md-6 mb-3">
+
+  <div class="card p-2 shadow-sm">
+
+    <div class="d-flex">
+
+      <img src="{{ item.image }}" style="width:80px;height:100px;object-fit:cover;margin-right:10px;">
+
+      <div class="flex-grow-1">
+
+        <b>{{ item.title }}</b><br>
+        <small class="text-muted">{{ item.author }}</small><br>
+        <span class="badge bg-info">{{ item.action }}</span><br>
+        <small>{{ item.timestamp }}</small><br>
+
+        <!-- Nút Xem chi tiết -->
+        <!--<a href="/book/{{ item.id }}" class="btn btn-sm btn-outline-primary mt-2">
+          <i class="fa fa-eye"></i> Xem
+        </a>-->
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+{% endblock %}
