@@ -45,21 +45,22 @@ def index():
     try:
         if "user_id" in session:
             recent_books = conn.execute("""
-                SELECT DISTINCT b.*
-                FROM user_behavior ub
-                JOIN books b ON ub.book_id = b.id
-                WHERE ub.user_id = ?
-                ORDER BY ub.timestamp DESC
-                LIMIT 8
-            """, (session["user_id"],)).fetchall()
+                 SELECT b.*
+                 FROM user_behavior ub
+                 JOIN books b ON ub.book_id = b.id
+                 WHERE ub.user_id = ?
+                 ORDER BY ub.timestamp DESC
+                 LIMIT 8
+                """, (session["user_id"],)).fetchall()
+          # 🎯 dùng AI cá nhân hóa mạnh hơn
+            recommendations = recommend_for_user_db(session["user_id"], conn)
 
-            if recent_books:
-                # Lấy title sách gần đây nhất để gợi ý
-                recommendations = recommend_books(recent_books[0]["title"])
-            elif books:
-                recommendations = recommend_books(random.choice(books)["title"])
+        elif recent_books:
+         # fallback nếu chưa đủ data user
+          recommendations = recommend_books(recent_books[0]["title"])
+
         elif books:
-            recommendations = recommend_books(random.choice(books)["title"])
+          recommendations = recommend_books(random.choice(books)["title"])
     except Exception as e:
         recommendations = []
 
@@ -159,6 +160,9 @@ def book_detail(id):
        save_behavior(session["user_id"], id, "view")
 
     try:
+       if "user_id" in session:
+          recommendations = recommend_for_user_db(session["user_id"], conn)
+       else:
         recommendations = recommend_books(book["title"])
     except:
         recommendations = []
@@ -255,20 +259,29 @@ def cart():
     recommendations = []
 
     try:
-       titles = [b["title"] for b in books]           # tiêu đề các sách trong cart
-       rec_pool = []
+       if "user_id" in session:
+        # 🎯 dùng AI theo user
+        recommendations = recommend_for_user_db(session["user_id"], conn)
 
-       for t in titles:
-          rec_pool += recommend_books(t)
+        # ❗ lọc bỏ sách đã có trong cart
+        cart_ids = {b["id"] for b in books}
+        recommendations = [r for r in recommendations if r["id"] not in cart_ids]
 
-       # lọc sau khi gom xong
-       cart_ids = {b["id"] for b in books}
-       rec_pool = [r for r in rec_pool if r["id"] not in cart_ids]
+       else:
+        # fallback logic cũ
+        titles = [b["title"] for b in books]
+        rec_pool = []
 
-       recommendations = rec_pool[:8]
+        for t in titles:
+            rec_pool += recommend_books(t)
+
+        cart_ids = {b["id"] for b in books}
+        rec_pool = [r for r in rec_pool if r["id"] not in cart_ids]
+
+        recommendations = rec_pool[:8]
 
     except:
-        recommendations = []
+         recommendations = []
         
     conn.close()
 
